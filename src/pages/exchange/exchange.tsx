@@ -1,12 +1,21 @@
 import React, { Component, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCurrency, getWithdraw, getInvoice, setInvoiceAmount, setInvoiceCurrentMethod, setWithdrawCurrentMethod } from 'store/exchange-reducer';
+import {
+    getCurrency,
+    getWithdraw,
+    getInvoice,
+    setInvoiceAmount,
+    setInvoiceCurrentMethod,
+    setWithdrawCurrentMethod,
+    toggleIsExchangeСompleted
+} from 'store/exchange-reducer';
 import MySelect from 'components/common/Select/MySelect';
 import s from './exchange.module.scss';
 import Button from 'components/common/Button/Button';
 import { NavLink } from 'react-router-dom';
 import Loader from 'components/common/Loader/Loader';
 import { DebounceInput } from 'react-debounce-input';
+import cn from 'classnames';
 
 const Exchange = () => {
 
@@ -59,14 +68,22 @@ const Exchange = () => {
     const invoiceAmount = useSelector((state: any) => state.exchangePage.invoiceAmount);
     const withdrawAmount = useSelector((state: any) => state.exchangePage.withdrawAmount);
 
-    //запрашиваем расчет суммы обмена для поля ввода Buy(withdraw)
+    //запрашиваем расчет суммы обмена для поля Buy(withdraw)
     const changeInvoiceInput = (e: any) => {
-        dispatch(getWithdraw(e.target.value));
+        if (e.target.value > 0) {
+            dispatch(getWithdraw(e.target.value));
+        } else {
+            dispatch(toggleIsExchangeСompleted(false));
+        }
     }
 
-    //запрашиваем расчет суммы обмена для поля ввода Sell(invoice)
+    //запрашиваем расчет суммы обмена для поля Sell(invoice)
     const changeWithdrawInput = (e: any) => {
-        dispatch(getInvoice(e.target.value));
+        if (e.target.value > 0) {
+            dispatch(getInvoice(e.target.value));
+        } else {
+            dispatch(toggleIsExchangeСompleted(false));
+        }
     }
 
     //Получаем текущее состояние isInputFetching
@@ -83,12 +100,12 @@ const Exchange = () => {
         <section className={s.main}>
             <h1 className="visually_hidden">Exchange page</h1>
 
-            <div className={isButtonFetching ? classNames(s.wrapper, s.element_disabled) : s.wrapper}>
+            <div className={isButtonFetching ? cn(s.wrapper, s.element_disabled) : s.wrapper}>
                 <div className={s.methods}>
                     <fieldset className={s.method}>
                         <p className={s.method_title}>Sell</p>
 
-                        <div className={isInputFetching && s.element_disabled}>
+                        <div className={isInputFetching ? s.element_disabled : undefined}>
                             <MySelect
                                 data={invoiceToSelect}
                                 defaultValue={invoiceDefault}
@@ -120,7 +137,7 @@ const Exchange = () => {
                     <fieldset className={s.method}>
                         <p className={s.method_title}>Buy</p>
 
-                        <div className={isInputFetching && s.element_disabled}>
+                        <div className={isInputFetching ? s.element_disabled : undefined}>
                             <MySelect
                                 data={withdrawToSelect}
                                 defaultValue={withdrawDefault}
@@ -152,7 +169,7 @@ const Exchange = () => {
 
                 <div className={s.button_wrapper}>
                     <NavLink to="/confirmation"
-                        className={(!isExchangeСompleted || isInputFetching) && s.element_disabled}
+                        className={(!isExchangeСompleted || isInputFetching) ? s.element_disabled : undefined}
                     >
                         <Button text="Exchange" />
                     </NavLink>

@@ -7,10 +7,11 @@ const SET_WITHDRAW_CURRENT_METHOD = 'SET_WITHDRAW_CURRENT_METHOD';
 const SET_INVOICE_AMOUNT = 'SET_INVOICE_AMOUNT';
 const SET_WITHDRAW_AMOUNT = 'SET_WITHDRAW_AMOUNT';
 const SET_CURRENT_BASE = 'SET_CURRENT_BASE';
-const SET_REQUEST_MESSAGE = 'SET_REQUEST_MESSAGE';
 const TOGGLE_INPUT_IS_FETCHING = 'TOGGLE_INPUT_IS_FETCHING';
 const TOGGLE_BUTTON_IS_FETCHING = 'TOGGLE_BUTTON_IS_FETCHING';
 const TOGGLE_IS_EXCHANGE_COMPLETED = 'TOGGLE_IS_EXCHANGE_COMPLETED';
+const TOGGLE_IS_REQUEST_COMPLETED = 'TOGGLE_IS_REQUEST_COMPLETED';
+
 
 export interface PayMethod {
     id: number;
@@ -25,13 +26,13 @@ interface Response {
 interface initialState extends Response {
     invoiceCurrentMethod: null | number;
     withdrawCurrentMethod: null | number;
-    invoiceAmount: null | number;
-    withdrawAmount: null | number;
+    invoiceAmount: number;
+    withdrawAmount: number;
     currentBase: string;
-    requestMessage: string;
     isInputFetching: boolean;
     isButtonFetching: boolean;
     isExchangeСompleted: boolean;
+    isRequestСompleted: boolean;
 }
 
 let initialState: initialState = {
@@ -39,13 +40,13 @@ let initialState: initialState = {
     withdraw: [],
     invoiceCurrentMethod: null,
     withdrawCurrentMethod: null,
-    invoiceAmount: null,
-    withdrawAmount: null,
+    invoiceAmount: 0,
+    withdrawAmount: 0,
     currentBase: '',
-    requestMessage: '',
     isInputFetching: false, //preloader
     isButtonFetching: false, //preloader
-    isExchangeСompleted: false
+    isExchangeСompleted: false,
+    isRequestСompleted: false
 };
 
 const exchangeReducer = (state = initialState, action: any) => {
@@ -82,14 +83,14 @@ const exchangeReducer = (state = initialState, action: any) => {
         case SET_INVOICE_AMOUNT: {
             return {
                 ...state,
-                invoiceAmount: action.invoiceAmount
+                invoiceAmount: parseFloat(action.invoiceAmount)
             }
         }
 
         case SET_WITHDRAW_AMOUNT: {
             return {
                 ...state,
-                withdrawAmount: action.withdrawAmount
+                withdrawAmount: parseFloat(action.withdrawAmount)
             }
         }
 
@@ -97,13 +98,6 @@ const exchangeReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 currentBase: action.currentBase
-            }
-        }
-
-        case SET_REQUEST_MESSAGE: {
-            return {
-                ...state,
-                requestMessage: action.requestMessage
             }
         }
 
@@ -125,6 +119,13 @@ const exchangeReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 isExchangeСompleted: action.isExchangeСompleted
+            }
+        }
+
+        case TOGGLE_IS_REQUEST_COMPLETED: {
+            return {
+                ...state,
+                isRequestСompleted: action.isRequestСompleted
             }
         }
 
@@ -170,11 +171,6 @@ export const setCurrentBase = (currentBase: string) => ({
     currentBase: currentBase
 });
 
-export const setRequestMessage = (requestMessage: string) => ({
-    type: SET_REQUEST_MESSAGE,
-    requestMessage: requestMessage
-});
-
 export const toggleInputIsFetching = (isInputFetching: boolean) => ({
     type: TOGGLE_INPUT_IS_FETCHING,
     isInputFetching
@@ -190,21 +186,19 @@ export const toggleIsExchangeСompleted = (isExchangeСompleted: boolean) => ({
     isExchangeСompleted
 });
 
+export const toggleIsRequestСompleted = (isRequestСompleted: boolean) => ({
+    type: TOGGLE_IS_REQUEST_COMPLETED,
+    isRequestСompleted: isRequestСompleted
+});
+
 
 //TC
 //запрашиваем списки платежных методов с сервера
 export const getCurrency = () => async (dispatch: any) => {
-    //side-effect
-    let response = await exchangeAPI.getCurrency();
-    console.log(response);
-    dispatch(setInvoice(response.invoice));
-    dispatch(setWithdraw(response.withdraw));
-
     try {
         //side-effect
         let response = await exchangeAPI.getCurrency();
 
-        console.log(response);
         dispatch(setInvoice(response.invoice));
         dispatch(setWithdraw(response.withdraw));
 
@@ -239,8 +233,7 @@ export const getWithdraw = (value: number) => async (dispatch: any, getState: an
             withdrawPayMethod: withdrawPayMethod
         });
 
-        console.log(response);
-        dispatch(setWithdraw(response.amount));
+        dispatch(setWithdrawAmount(response.amount));
         dispatch(setCurrentBase('invoice'));
         dispatch(toggleInputIsFetching(false));
         dispatch(toggleIsExchangeСompleted(true));
@@ -276,8 +269,7 @@ export const getInvoice = (value: number) => async (dispatch: any, getState: any
             withdrawPayMethod: withdrawPayMethod
         });
 
-        console.log(response);
-        dispatch(setInvoice(response.amount));
+        dispatch(setInvoiceAmount(response.amount));
         dispatch(setCurrentBase('withdraw'));
         dispatch(toggleInputIsFetching(false));
         dispatch(toggleIsExchangeСompleted(true));
@@ -323,9 +315,8 @@ export const sendExchangeRequest = () => async (dispatch: any, getState: any) =>
             withdrawPayMethod: withdrawPayMethod
         });
 
-        console.log(response);
         dispatch(toggleButtonIsFetching(false));
-        dispatch(setRequestMessage(response.message));
+        dispatch(toggleIsRequestСompleted(true));
 
     } catch (error) {
         if (error.response) {
@@ -346,10 +337,10 @@ export const clearExchange = () => async (dispatch: any) => {
     dispatch(setInvoiceAmount(0));
     dispatch(setWithdrawAmount(0));
     dispatch(setCurrentBase(''));
-    dispatch(setRequestMessage(''));
     dispatch(toggleInputIsFetching(false));
     dispatch(toggleButtonIsFetching(false));
     dispatch(toggleIsExchangeСompleted(false));
+    dispatch(toggleIsRequestСompleted(false));
 };
 
 export default exchangeReducer;

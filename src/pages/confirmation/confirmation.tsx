@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cn from 'classnames';
 import Button from 'components/common/Button/Button';
 import ButtonTransparent from 'components/common/ButtonTransparent/ButtonTransparent';
 import React from 'react';
@@ -35,8 +35,8 @@ const Confirmation = () => {
     const withdrawAmount = useSelector((state: any) => state.exchangePage.withdrawAmount);
 
     
-    //определяем успешность создания заявки на обмен (получено ли сообщение)
-    const requestMessage = useSelector((state: any) => state.exchangePage.requestMessage);
+    //определяем успешность создания заявки на обмен
+    const isRequestСompleted = useSelector((state: any) => state.exchangePage.isRequestСompleted);
 
     //Получаем текущее состояние isButtonFetching
     const isButtonFetching = useSelector((state: any) => state.exchangePage.isButtonFetching);
@@ -46,7 +46,7 @@ const Confirmation = () => {
         dispatch(sendExchangeRequest());
     }
 
-    if (requestMessage) {
+    if (isRequestСompleted) {
         return <Redirect to={"/successful"} />
     }
 
@@ -54,7 +54,7 @@ const Confirmation = () => {
         <section className={s.main}>
             <h1 className="visually_hidden">Confirmation page</h1>
 
-            <div className={isButtonFetching ? classNames(s.wrapper, s.element_disabled) : s.wrapper}>
+            <div className={isButtonFetching ? cn(s.wrapper, s.element_disabled) : s.wrapper}>
 
 
                 <p className={s.title}>Details</p>

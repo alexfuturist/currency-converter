@@ -10,9 +10,6 @@ const Successful = () => {
 
     const dispatch = useDispatch();
 
-    //определяем полученное сообщение после создания заявки на обмен
-    const requestMessage = useSelector((state: any) => state.exchangePage.requestMessage);
-
     return (
         <section className={s.main}>
             <h1 className="visually_hidden">Successful page</h1>
@@ -26,7 +23,7 @@ const Successful = () => {
 
                 <p className={s.title}>Success!</p>
                 <p className={s.text}>
-                    {requestMessage || 'Your exchange order has been placed successfully and will be processed soon.'}
+                    Your exchange order has been placed successfully and will be processed soon.
                 </p>
 
                 <div className={s.button_wrapper}>

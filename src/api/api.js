@@ -1,8 +1,7 @@
 import * as axios from 'axios';
 
 const instance = axios.create({
-    withCredentials: true,
-    baseURL: "http://perimeter-e.ew.r.appspot.com/",
+    baseURL: "https://involve.software/test_front/api/",
 });
 
 interface QueryStringParams {
@@ -42,10 +41,13 @@ export const exchangeAPI = {
     sendExchangeRequest(obj: PostBody) {
         return (
             instance.post(`bids`, {
-                amount: `${obj.amount}`,
+                amount: +`${obj.amount}`,
                 base: `${obj.base}`,
-                invoicePayMethod: `${obj.invoicePayMethod}`,
-                withdrawPayMethod: `${obj.withdrawPayMethod}`
+                invoicePayMethod: +`${obj.invoicePayMethod}`,
+                withdrawPayMethod: +`${obj.withdrawPayMethod}`
+            })
+            .then(response => {
+                return response.data
             })
         )
     }

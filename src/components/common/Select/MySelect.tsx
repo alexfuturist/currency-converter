@@ -95,7 +95,7 @@ const MySelect = (props: any) => {
         if (props.data[0]) {
             dispatch(props.setOption(props.defaultValue.value));
         }
-    }, [])
+    }, [props.defaultValue])
 
 
     if (props.data[0]) {
