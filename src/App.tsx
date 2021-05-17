@@ -1,24 +1,19 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import Confirmation from 'pages/confirmation/confirmation';
+import Successful from 'pages/successful/successful';
+import { Redirect, Route, Switch } from 'react-router';
+import './App.scss';
+import Exchange from './pages/exchange/exchange';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Switch>
+        <Route exact path="/" render={() => <Redirect to="/exchange" />} />
+        <Route path="/exchange" render={() => <Exchange />} />
+        <Route path="/confirmation" render={() => <Confirmation />} />
+        <Route path="/successful" render={() => <Successful/>} />
+        <Route path="*" render={() => <div>404 NotFound</div>} />
+      </Switch>
     </div>
   );
 }
