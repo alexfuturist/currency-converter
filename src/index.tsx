@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
-  BrowserRouter
+  BrowserRouter, HashRouter
 } from "react-router-dom";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -11,11 +11,11 @@ import {store} from 'store/store';
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <HashRouter>
       <Provider store={store}>
         <App />
       </Provider>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

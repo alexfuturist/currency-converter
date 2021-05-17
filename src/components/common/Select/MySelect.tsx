@@ -92,7 +92,9 @@ const MySelect = (props: any) => {
 
     //записываем в state начальное значение селекта
     useEffect(() => {
-        dispatch(props.setOption(props.defaultValue.value));
+        if (props.data[0]) {
+            dispatch(props.setOption(props.defaultValue.value));
+        }
     }, [])
 
 
