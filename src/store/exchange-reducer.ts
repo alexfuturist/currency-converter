@@ -35,24 +35,8 @@ interface initialState extends Response {
 }
 
 let initialState: initialState = {
-    invoice: [
-        { "id": 6, "name": "Card UAH" },
-        { "id": 2, "name": "Payeer" },
-        { "id": 3, "name": "YandexMoney Personal" },
-        { "id": 4, "name": "Bitcoin" },
-        { "id": 5, "name": "Capitalist RUB" },
-        { "id": 7, "name": "LiqPay UAH" },
-        { "id": 9, "name": "WM test" },
-        { "id": 10, "name": "Test 2" }
-    ],
-    withdraw: [
-        { "id": 6, "name": "Card UAH" },
-        { "id": 3, "name": "YandexMoney Personal" },
-        { "id": 4, "name": "Bitcoin" },
-        { "id": 8, "name": "\u041f\u0440\u0438\u0432\u0430\u044224 UAH" },
-        { "id": 20, "name": "BitcoinCash" },
-        { "id": 21, "name": "Dash" }
-    ],
+    invoice: [],
+    withdraw: [],
     invoiceCurrentMethod: null,
     withdrawCurrentMethod: null,
     invoiceAmount: null,
